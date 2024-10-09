@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
+        StringBuilder sb = new StringBuilder();
          T = Integer.parseInt(st.nextToken());
          M = Integer.parseInt(st.nextToken());
         board = new int[5][5];
@@ -52,8 +52,9 @@ public class Main {
             if(answer_value == 0) break;
             answer_value += react_chain(answer_board);
 
-            System.out.println(answer_value);
+            sb.append(answer_value+ " ");
         }
+        System.out.println(sb);
     }
 
     private static int[][] spin(int r, int c, int angle) {
