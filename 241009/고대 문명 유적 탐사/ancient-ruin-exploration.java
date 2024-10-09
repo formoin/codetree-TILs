@@ -2,8 +2,10 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static int[][] board;
-    public static Deque<Integer> rocks;
+    static int[][] board;
+    static int[] rocks;
+    static int rock_cnt=0;
+    static int T, M;
     public static int[][] dir = {
         {0, 1, 0, -1},
         {1, 0, -1, 0}
@@ -12,10 +14,10 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int T = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
+         T = Integer.parseInt(st.nextToken());
+         M = Integer.parseInt(st.nextToken());
         board = new int[5][5];
-        rocks = new ArrayDeque<>();
+        rocks = new int[M];
         
         for(int i=0; i<5; i++) {
             st = new StringTokenizer(br.readLine());
@@ -25,8 +27,8 @@ public class Main {
         }
         st = new StringTokenizer(br.readLine());
         for(int i=0; i<M; i++) {
-            int num = Integer.parseInt(st.nextToken());
-            rocks.add(num);
+            rocks[i] = Integer.parseInt(st.nextToken());
+           
         }
 
         int[][] answer_board = new int[5][5];
@@ -47,7 +49,7 @@ public class Main {
                     }
                 }
             }
-            if(answer_value == 0) continue;
+            if(answer_value == 0) break;
             answer_value += react_chain(answer_board);
 
             System.out.println(answer_value);
@@ -100,27 +102,24 @@ public class Main {
             
         }
 
-        // for(int i=0; i<5; i++) {
-        //     System.out.println(Arrays.toString(spined_board[i]));
-        // }
-        // System.out.println();
         return spined_board;
     }
 
     private static int get_value(int[][] spined_board) {
         
         Deque<Integer[]> q = new ArrayDeque<>();
-        
+        Deque<Integer[]> q_for = new ArrayDeque<>();
         boolean[][] visit = new boolean[5][5];
         int total =0;
+        int target;
         for(int i=0; i<5; i++) {
             for(int j=0; j<5; j++) {
                 
                 if(visit[i][j]) continue;
 
-                Deque<Integer[]> q_for = new ArrayDeque<>();
-                int target = spined_board[i][j];
-                int cnt =1;
+                q_for.clear();
+                target = spined_board[i][j];
+
                 q.add(new Integer[] {i, j});
                 q_for.add(new Integer[] {i, j});
                 visit[i][j] = true;
@@ -140,11 +139,11 @@ public class Main {
                         visit[nr][nc] = true;
                         q.add(new Integer[] {nr, nc});
                         q_for.add(new Integer[] {nr, nc});
-                        cnt++;
+
                     }
                 }
-                if(cnt>=3) {
-                    total+=cnt;
+                if(q_for.size()>=3) {
+                    total+=q_for.size();
                     while(!q_for.isEmpty()) {
                         Integer[] tmep = q_for.poll();
                         spined_board[tmep[0]][tmep[1]] = 0;
@@ -157,15 +156,16 @@ public class Main {
         return total;
     }
 
-    private static void set_board(int[][] board) {
-        A:for(int c=0; c<5; c++) {
+    private static void set_board(int[][] setting_board) {
+        for(int c=0; c<5; c++) {
             for(int r=4; r>=0; r--) {
-                if(board[r][c] == 0) {
-                    if(rocks.isEmpty()) break A;
-                    board[r][c] = rocks.poll();
+                if(setting_board[r][c] == 0) {
+                    
+                    setting_board[r][c] = rocks[rock_cnt++];
                 }
             }
         }
+        board = setting_board;
     }
 
     private static int react_chain(int[][] board) {
