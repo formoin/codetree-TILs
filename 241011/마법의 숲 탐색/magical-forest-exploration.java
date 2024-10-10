@@ -7,9 +7,9 @@ public class Main {
     static int[][] fairy;
 
     static int[][] dir = {
-        {-1, 0, 1, 0},
-        {0, 1, 0, -1}
-        // 북 동 남 서
+            {-1, 0, 1, 0},
+            {0, 1, 0, -1}
+            // 북 동 남 서
     };
     static int[][] board;
     static int answer=0;
@@ -56,7 +56,7 @@ public class Main {
                 r = nr;
                 continue;
             }
-            
+
             flag = true;
             nr=r;
             nc=c-1;
@@ -128,29 +128,43 @@ public class Main {
             answer+= cur_ans;
         }
 
+
     }
 
     static void move_fairy(int r, int c, boolean[][] visit, int i) {
 
-
-
         if(board[r][c]<=K) i=board[r][c];
-        for(int d=0; d<4; d++) {
-            int nr = r+dir[0][d];
-            int nc = c+dir[1][d];
-            if(nr<1 || nr>R || nc<1 || nc>C || visit[nr][nc]) continue;
+        if(board[r][c]>K) {
+            for(int d=0; d<4; d++) {
+                int nr = r+dir[0][d];
+                int nc = c+dir[1][d];
+                if(nr<1 || nr>R || nc<1 || nc>C || visit[nr][nc]) continue;
 
-            if(board[r][c]!=K+i) {
-                if( board[nr][nc] != i && board[nr][nc]!=K+i) continue;
+                if(board[nr][nc] == 0) continue;
+
+                visit[nr][nc] =true;
+                move_fairy(nr,nc, visit, i);
+                visit[nr][nc] = false;
             }
-
-            if(board[nr][nc] == 0) continue;
-
-            visit[nr][nc] =true;
-            move_fairy(nr,nc, visit, i);
-            visit[nr][nc] = false;
         }
-        
+        else {
+            for (int d = 0; d < 4; d++) {
+                int nr = r + dir[0][d];
+                int nc = c + dir[1][d];
+                if (nr < 1 || nr > R || nc < 1 || nc > C || visit[nr][nc]) continue;
+
+                if (board[r][c] != K + i) {
+                    if (board[nr][nc] != i && board[nr][nc] != K + i) continue;
+                }
+
+                if (board[nr][nc] == 0) continue;
+
+                visit[nr][nc] = true;
+                move_fairy(nr, nc, visit, i);
+                visit[nr][nc] = false;
+            }
+        }
+
         cur_ans = Math.max(cur_ans, r);
 
     }
